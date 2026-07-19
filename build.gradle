@@ -8,7 +8,7 @@ group = "${group_name}"
 version = "${app_version}"
 
 java {
-    sourceCompatibility = '21'
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -29,6 +29,7 @@ dependencies {
     implementation platform("org.springframework.boot:spring-boot-dependencies:${spring_boot}")
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation project(':oracle-buffered-logger')
 
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${swagger}"
