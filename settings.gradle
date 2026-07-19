@@ -1,0 +1,3 @@
+rootProject.name = 'oracle-buffered-logger-app'
+
+include 'oracle-buffered-logger'

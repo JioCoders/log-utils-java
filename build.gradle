@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${spring_boot}"
+//    id 'io.spring.dependency-management' version "${dependency_management}"
+}
+
+group = "${group_name}"
+version = "${app_version}"
+
+java {
+    sourceCompatibility = '21'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {// 1. Define the BOM once as a variable
+    def springBom = platform(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+
+    // 2. Apply it to BOTH implementation and annotationProcessor
+    implementation springBom
+    annotationProcessor springBom
+
+    // 3. Your dependencies (versions are now safely managed again)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation project(':oracle-buffered-logger')
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${swagger}"
+    implementation 'org.hibernate.orm:hibernate-envers'
+
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

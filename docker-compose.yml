@@ -1,0 +1,43 @@
+# ✅ How to Run It
+# From the same directory as your docker-compose.yml, run:
+# docker-compose up --build
+
+version: '3.8'
+
+services:
+#  portfolio-jsp:
+#    build:
+#      context: .              # Your project root
+#      dockerfile: Dockerfile # Ensure this matches your Dockerfile name
+#    ports:
+#      - "8080:8080"           # Maps container port 8080 to your local port 8080
+#    env_file:
+#      - env/.env.prod
+#    environment:
+#      - JAVA_OPTS=-Xms256m -Xmx512m
+
+  # Oracle 23ai/26ai Free Database Engine
+  oracle-db:
+    image: container-registry.oracle.com/database/free:latest
+#    image: gvenzl/oracle-free:latest
+    container_name: oracle-dbm
+    ports:
+      - "1521:1521"
+    environment:
+      # Sets the main administrative system password
+      - ORACLE_PASSWORD=Password123
+      # Automatically provisions a standard workspace user for your Spring application
+      - APP_USER=JIODB
+      - APP_USER_PASSWORD=Password123
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  oracle_data:
+    external: true

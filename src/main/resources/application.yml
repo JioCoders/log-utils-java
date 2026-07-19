@@ -1,0 +1,20 @@
+# Oracle Database Connection Properties
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/FREEPDB1
+    username: JIODB
+    password: Password123
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  # JPA/Hibernate properties
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+batch-size: 50
