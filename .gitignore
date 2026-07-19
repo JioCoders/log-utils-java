@@ -52,3 +52,4 @@ out/
 # Environment variables / Secrets
 .env
 *.properties.local
+*.local.properties

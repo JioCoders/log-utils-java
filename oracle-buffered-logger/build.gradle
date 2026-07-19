@@ -1,8 +1,9 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
 
-group = 'com.jiocoders.logutil'
+group = 'com.jiocoders.log-util'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
@@ -31,4 +32,73 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'log-utils'
+            from components.java
+
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionResult()
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+
+            pom {
+                name = 'Oracle Buffered Logger'
+                description = 'A buffered logging utility for Oracle database with Spring Boot integration'
+                url = 'https://github.com/JioCoders/log-utils-java'
+                
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'jiocoders'
+                        name = 'JioCoders'
+                        email = 'jiocoders@gmail.com'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:git://github.com/JioCoders/log-utils-java'
+                    developerConnection = 'scm:git:ssh://github.com/JioCoders/log-utils-java'
+                    url = 'https://github.com/JioCoders/log-utils-java'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/JioCoders/log-utils-java')
+            credentials {
+                username = project.findProperty('gpr.user') ?: System.getenv('GITHUB_USERNAME')
+                password = project.findProperty('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+    enabled = true
+}
+
+tasks.withType(Javadoc).configureEach {
+    enabled = false
 }

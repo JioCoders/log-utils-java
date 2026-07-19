@@ -25,8 +25,9 @@ subprojects {
     }
 }
 
-
 dependencies {
+    implementation platform("org.springframework.boot:spring-boot-dependencies:${spring_boot}")
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation project(':oracle-buffered-logger')
 
@@ -36,4 +37,12 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+springBoot  {
+    buildInfo()
+}
+
+bootJar {
+    enabled = true
 }
