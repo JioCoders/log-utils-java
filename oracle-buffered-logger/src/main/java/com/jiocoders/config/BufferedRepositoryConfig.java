@@ -7,6 +7,8 @@ import com.jiocoders.repository.ApiLogJpaRepository;
 import com.jiocoders.repository.BufferedRepository;
 import com.jiocoders.repository.ErrLogJpaRepository;
 import com.jiocoders.repository.MsgLogJpaRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class BufferedRepositoryConfig {

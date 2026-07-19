@@ -1,5 +1,0 @@
-package com.example.logger.utils;
-
-public enum LogType {
-    APP_LOG, API_LOG, MSG_LOG, KAFKA_LOG, SMS_LOG, EMAIL_LOG, EXTERNAL_LOG, AUDIT_LOG, SUCCESS_LOG, FAILED_LOG, INFO_LOG, DEBUG_LOG, WARN_LOG, ERROR_LOG, OTHER_LOG
-}

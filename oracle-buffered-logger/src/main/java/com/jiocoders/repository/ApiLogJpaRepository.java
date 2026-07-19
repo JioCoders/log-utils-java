@@ -1,6 +1,6 @@
 package com.jiocoders.repository;
 
-import com.example.logger.entity.AuditApiLogEntity;
+import com.jiocoders.entity.AuditApiLogEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

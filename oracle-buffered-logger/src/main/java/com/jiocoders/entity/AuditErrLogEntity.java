@@ -1,6 +1,7 @@
 package com.jiocoders.entity;
 
-import com.example.logger.utils.LogType;
+import com.jiocoders.utils.LogType;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 

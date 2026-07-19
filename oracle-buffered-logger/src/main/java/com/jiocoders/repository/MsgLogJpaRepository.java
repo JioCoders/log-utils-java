@@ -1,6 +1,6 @@
 package com.jiocoders.repository;
 
-import com.example.logger.entity.AuditMsgLogEntity;
+import com.jiocoders.entity.AuditMsgLogEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

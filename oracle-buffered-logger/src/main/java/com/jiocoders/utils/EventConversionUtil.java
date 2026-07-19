@@ -1,8 +1,8 @@
 package com.jiocoders.utils;
 
-import com.example.logger.entity.AuditApiLogEntity;
-import com.example.logger.entity.AuditErrLogEntity;
-import com.example.logger.entity.AuditMsgLogEntity;
+import com.jiocoders.entity.AuditApiLogEntity;
+import com.jiocoders.entity.AuditErrLogEntity;
+import com.jiocoders.entity.AuditMsgLogEntity;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 

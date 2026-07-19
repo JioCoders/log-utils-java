@@ -1,22 +1,24 @@
 package com.example.logger.controller;
 
-import com.example.logger.entity.AuditApiLogEntity;
-import com.example.logger.entity.AuditErrLogEntity;
-import com.example.logger.entity.AuditMsgLogEntity;
-import com.example.logger.utils.EventConversionUtil;
-import com.example.logger.utils.LogType;
 import com.jiocoders.MainWorker;
-import lombok.RequiredArgsConstructor;
+import com.jiocoders.entity.AuditApiLogEntity;
+import com.jiocoders.entity.AuditErrLogEntity;
+import com.jiocoders.entity.AuditMsgLogEntity;
+import com.jiocoders.utils.EventConversionUtil;
+import com.jiocoders.utils.LogType;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 public class LogTestController {
 
     private final ApplicationEventPublisher eventPublisher;
+
+    public LogTestController(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
 
     /**
      * Endpoint to simulate API log generation.
@@ -29,7 +31,7 @@ public class LogTestController {
                                 @RequestParam String headers,
                                 @RequestParam Integer statusCode,
                                 @RequestParam(required = false) String requestBody,
-                                @RequestParam(required = false) String responseBody) throws InterruptedException {
+                                @RequestParam(required = false) String responseBody) {
 
         MainWorker worker = new MainWorker();
         worker.check();
@@ -42,7 +44,6 @@ public class LogTestController {
         // Publish the err log event
         eventPublisher.publishEvent(log);
 
-//        Thread.sleep(10000); // Simulate processing time
         EventConversionUtil.updateApiLog(log, builder -> builder.responseBody(responseBody));
         // Publish the event asynchronously/synchronously
         eventPublisher.publishEvent(log);

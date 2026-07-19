@@ -1,5 +1,11 @@
 package com.jiocoders.entity;
 
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.util.UUID;
 
 @Entity
@@ -19,10 +25,10 @@ public class AuditApiLogEntity extends AuditDateEntity {
     @Column(name = "METHOD", length = 10)
     private String method;
 
-    @Column(name = "ENDPOINT", length = 255)
+    @Column(name = "ENDPOINT")
     private String endpoint;
 
-    @Column(name = "HEADERS", length = 255)
+    @Column(name = "HEADERS")
     private String headers;
 
     @Column(name = "STATUS_CODE")
