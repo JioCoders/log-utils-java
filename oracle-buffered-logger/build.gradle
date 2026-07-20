@@ -1,11 +1,17 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
+    // Use the official community-standard plugin recommended by Sonatype
+    id 'com.gradleup.nmcp' version '0.0.9'
+    id 'io.freefair.lombok' version '8.6'
 }
 
-group = 'com.jiocoders.log-util'
-version = '0.0.1-SNAPSHOT'
-
+group = 'com.jiocoders'
+version = '0.0.1'
+ext {
+    sdkName = 'Oracle Buffered Logger'
+}
 repositories {
     mavenCentral()
 }
@@ -13,10 +19,6 @@ repositories {
 dependencies {
     // Spring
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.hibernate.orm:hibernate-envers'
 
     // Test
@@ -25,18 +27,12 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-jar {
-    enabled = true
-}
-
-test {
-    useJUnitPlatform()
-}
-
 publishing {
     publications {
         maven(MavenPublication) {
+            groupId = "com.jiocoders"
             artifactId = 'log-utils'
+            version = "0.0.1"
             from components.java
 
             versionMapping {
@@ -52,11 +48,17 @@ publishing {
                 name = 'Oracle Buffered Logger'
                 description = 'A buffered logging utility for Oracle database with Spring Boot integration'
                 url = 'https://github.com/JioCoders/log-utils-java'
-                
+                inceptionYear = "2026"
+
+                organization {
+                    name = "Jiocoders"
+                    url = "https://jiocoders.com/"
+                }
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
                         url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
                 
@@ -67,7 +69,7 @@ publishing {
                         email = 'jiocoders@gmail.com'
                     }
                 }
-                
+
                 scm {
                     connection = 'scm:git:git://github.com/JioCoders/log-utils-java'
                     developerConnection = 'scm:git:ssh://github.com/JioCoders/log-utils-java'
@@ -89,6 +91,37 @@ publishing {
     }
 }
 
+// 1. Ensure signing is explicitly linked to your publication
+// Enable signing for the mavenJava publication
+signing {
+    useGpgCmd()
+    sign publishing.publications.maven
+}
+// 2. Configure NMCP to fetch the signed artifacts
+// Configure the Sonatype Central modern publishing block
+nmcp {
+    // Links your publication "maven" (from line 42 of your script) to the portal
+    publish('maven') {
+        // Matches the token credentials specified in your ~/.gradle/gradle.properties
+        username = providers.gradleProperty("ossrhUsername")
+        password = providers.gradleProperty("ossrhPassword")
+    }
+}
+//centralPortal {
+//    // Matches the token credentials specified in your gradle.properties
+//    username = providers.gradleProperty("sonatypeUsername")
+//    password = providers.gradleProperty("sonatypePassword")
+//
+//    // Optional: set to true if you want the bundle to publish automatically
+//    // to Maven Central once all validation checks pass.
+//    // If false, it remains a deployment draft in the portal.
+//    publishingType = 'AUTOMATIC'
+//}
+
+test {
+    useJUnitPlatform()
+}
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -98,6 +131,7 @@ jar {
     enabled = true
 }
 
-tasks.withType(Javadoc).configureEach {
-    enabled = false
+// 3. CRITICAL: Force Gradle to sign the artifacts before NMCP creates the zip bundle
+tasks.withType(AbstractPublishToMaven).configureEach {
+    dependsOn tasks.withType(Sign)
 }
