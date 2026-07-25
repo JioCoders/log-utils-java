@@ -83,4 +83,4 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: |
           cd oracle-buffered-logger
-          ./gradlew clean publishMavenPublicationToCentralPortal --no-daemon
+          ../gradlew clean publishMavenPublicationToCentralPortal --no-daemon
