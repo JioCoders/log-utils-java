@@ -94,20 +94,36 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
-    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
-    def signingPassword = System.getenv("GPG_PASSPHRASE")
+//    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
+//    def signingPassword = System.getenv("GPG_PASSPHRASE")
 
-    println("------> GPG_SIGNING_KEY: " + signingKeyId)
+    def signingKeyRaw = providers.gradleProperty("signingKey").getOrElse("")
+    def signingPassword = providers.gradleProperty("signingPassword").getOrElse("")
+
+    println("------> GPG_SIGNING_KEY: " + signingKeyRaw)
     println("------> GPG_PASSPHRASE: " + signingPassword)
-    if (signingKeyId && signingPassword) {
-        // Use in-memory key decoding for GitHub Actions
-        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
-        useInMemoryPgpKeys(decodedKey, signingPassword)
-        println("------> GPG_SIGNING_KEY: success" )
-    } else {
-        // Fallback to your local Mac setup for manual builds
-        useGpgCmd()
+
+    if (!signingKeyRaw.isEmpty()) {
+        def signingKey = signingKeyRaw.contains("-----BEGIN") ?
+                signingKeyRaw :
+                new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
+
+        println("------> GPG_SIGNING_KEY: success1" +signingKey)
+        // Ensure NO 'useGpgCmd()' or tool paths are written here
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        println("------> GPG_SIGNING_KEY: success11" )
+        sign publishing.publications.maven
+        println("------> GPG_SIGNING_KEY: success22" )
     }
+//    if (signingKeyId && signingPassword) {
+//        // Use in-memory key decoding for GitHub Actions
+//        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
+//        useInMemoryPgpKeys(decodedKey, signingPassword)
+//        println("------> GPG_SIGNING_KEY: success" )
+//    } else {
+//        // Fallback to your local Mac setup for manual builds
+//        useGpgCmd()
+//    }
     sign publishing.publications.maven
 }
 // 2. Configure NMCP to fetch the signed artifacts
