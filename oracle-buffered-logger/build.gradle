@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.jiocoders'
-version = '0.0.1'
+version = '0.0.2'
 ext {
     sdkName = 'Oracle Buffered Logger'
 }
@@ -32,7 +32,7 @@ publishing {
         maven(MavenPublication) {
             groupId = "com.jiocoders"
             artifactId = 'log-utils'
-            version = "0.0.1"
+            version = "0.0.2"
             from components.java
 
             versionMapping {
@@ -94,6 +94,12 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
+//    def signingKey = providers.gradleProperty("signing.keyId").orElse("").get()
+//    def signingPassword = providers.gradleProperty("signing.keyPassword").orElse("").get()
+//    // Configures Gradle to sign from memory instead of searching for key.gpg files
+//    if (signingKey && signingPassword) {// Explicitly tell Gradle to use the key if found
+//        useInMemoryPgpKeys(signingKey as String, signingPassword as String)
+//    }
     useGpgCmd()
     sign publishing.publications.maven
 }
