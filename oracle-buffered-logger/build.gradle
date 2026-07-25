@@ -94,13 +94,21 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
-    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
-    def signingPassword = System.getenv("GPG_PASSPHRASE")
+//    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
+//    def signingPassword = System.getenv("GPG_PASSPHRASE")
 
-    if (signingKeyId && signingPassword) {
+    def signingKeyRaw = providers.gradleProperty("signingKey").orElse("").get()
+    def signingPassword = providers.gradleProperty("signingPassword").orElse("").get()
+
+    // Check if the key is base64 encoded (common in CI environments) and decode it safely
+    def signingKey = signingKeyRaw.contains("-----BEGIN") ?
+            signingKeyRaw :
+            new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
+
+    if (signingKey) {
         // Use in-memory key decoding for GitHub Actions
-        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
-        useInMemoryPgpKeys(decodedKey, signingPassword)
+//        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
+        useInMemoryPgpKeys(signingKey, signingPassword)
     } else {
         // Fallback to your local Mac setup for manual builds
         useGpgCmd()
