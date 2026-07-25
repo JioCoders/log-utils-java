@@ -97,18 +97,17 @@ signing {
 //    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
 //    def signingPassword = System.getenv("GPG_PASSPHRASE")
 
-    def signingKeyRaw = providers.gradleProperty("signingKey").orElse("").get()
-    def signingPassword = providers.gradleProperty("signingPassword").orElse("").get()
+    def signingKeyRaw = providers.gradleProperty("signingKey").getOrElse("")
+    def signingPassword = providers.gradleProperty("signingPassword").getOrElse("")
 
-    // Check if the key is base64 encoded (common in CI environments) and decode it safely
-    def signingKey = signingKeyRaw.contains("-----BEGIN") ?
-            signingKeyRaw :
-            new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
+    if (!signingKeyRaw.isEmpty()) {
+        def signingKey = signingKeyRaw.contains("-----BEGIN") ?
+                signingKeyRaw :
+                new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
 
-    if (signingKey) {
-        // Use in-memory key decoding for GitHub Actions
-//        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
         useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.maven
+
     } else {
         // Fallback to your local Mac setup for manual builds
         useGpgCmd()
