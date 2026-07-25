@@ -112,20 +112,33 @@ signing {
     println("------> GPG_SIGNING_KEY: " + signingKeyRaw)
     println("------> GPG_PASSPHRASE: " + signingPassword)
 
+    // 1. Dynamic BouncyCastle Registration
+    try {
+        java.security.Security.addProvider(
+                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
+        )
+    } catch (Exception e) {
+        // Fallback for custom class loaders
+    }
     if (!signingKeyRaw.isEmpty()) {
-
-        println("------> GPG_SIGNING_KEY: success" )
-
-        // 2. Register the cryptographic provider dynamically for Ed25519 support
-        try {
-            java.security.Security.addProvider(
-                    Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
-            )
-        } catch (Exception e) {
-            // Fallback for internal class loaders
+        // 2. Decode the Base64 key cleanly
+        String signingKey = ""
+        if (signingKeyRaw.contains("-----BEGIN")) {
+            signingKey = signingKeyRaw
+        } else {
+            // Trim whitespace and decode the Base64 safely into a string
+            byte[] decodedBytes = Base64.getDecoder().decode(signingKeyRaw.replaceAll("\\s", ""))
+            signingKey = new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8)
         }
-        println("------> GPG_SIGNING_KEY: success11" + signingKeyRaw)
 
+        // 3. Diagnostic check to ensure the key structure didn't lose its line breaks
+        if (signingKey.contains("\n")) {
+            println("------> GPG_KEY_VALIDATION: Structural check PASSED (Contains line breaks)")
+        } else {
+            println("------> GPG_KEY_VALIDATION: WARNING! Key contains no line breaks. PGP decoder might fail.")
+        }
+
+        // 4. Initialize the native signature process
         useInMemoryPgpKeys(signingKeyRaw, signingPassword)
         println("------> GPG_SIGNING_KEY: success222" )
         sign publishing.publications.maven
