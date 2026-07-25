@@ -94,23 +94,26 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
-//    def signingKey = providers.gradleProperty("signing.keyId").orElse("").get()
-//    def signingPassword = providers.gradleProperty("signing.keyPassword").orElse("").get()
-//    // Configures Gradle to sign from memory instead of searching for key.gpg files
-//    if (signingKey && signingPassword) {// Explicitly tell Gradle to use the key if found
-//        useInMemoryPgpKeys(signingKey as String, signingPassword as String)
-//    }
-    useGpgCmd()
+    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
+    def signingPassword = System.getenv("GPG_PASSPHRASE")
+
+    if (signingKeyId && signingPassword) {
+        // Use in-memory key decoding for GitHub Actions
+        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
+        useInMemoryPgpKeys(decodedKey, signingPassword)
+    } else {
+        // Fallback to your local Mac setup for manual builds
+        useGpgCmd()
+    }
     sign publishing.publications.maven
 }
 // 2. Configure NMCP to fetch the signed artifacts
 // Configure the Sonatype Central modern publishing block
 nmcp {
-    // Links your publication "maven" (from line 42 of your script) to the portal
     publish('maven') {
-        // Matches the token credentials specified in your ~/.gradle/gradle.properties
-        username = providers.gradleProperty("ossrhUsername")
-        password = providers.gradleProperty("ossrhPassword")
+        // 2. Read from system environment variables in CI, fallback to gradle.properties locally
+        username = System.getenv("OSSRH_USERNAME") ?: providers.gradleProperty("ossrhUsername").getOrNull()
+        password = System.getenv("OSSRH_PASSWORD") ?: providers.gradleProperty("ossrhPassword").getOrNull()
     }
 }
 //centralPortal {
