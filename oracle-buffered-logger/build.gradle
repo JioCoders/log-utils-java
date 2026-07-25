@@ -1,3 +1,12 @@
+//import org.bouncycastle.jce.provider.BouncyCastleProvider
+//import java.security.Security
+//
+//// CRITICAL: Initialize the advanced BouncyCastle provider right as the script parses.
+//// This is mandatory for Gradle to understand modern Ed25519 / Elliptic Curve GPG keys.
+//if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+//    Security.addProvider(new BouncyCastleProvider())
+//}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -94,22 +103,38 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
+    // 1. Dynamic execution hook: Registers the crypto engine safely inside the lifecycle
+    try {
+        java.security.Security.addProvider(
+                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
+        )
+    } catch (Exception e) {
+        // Standard fallback if the class loader handles it internally
+    }
 //    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
 //    def signingPassword = System.getenv("GPG_PASSPHRASE")
 // 1. Read directly from the GitHub environment variables
     def signingKeyRaw = System.getenv("GPG_SIGNING_KEY") ?: ""
     def signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
 
-    println("------> GPG_SIGNING_KEY: " + (signingKeyRaw.isEmpty() ? "EMPTY" : "FOUND"))
-    println("------> GPG_PASSPHRASE: " + (signingPassword.isEmpty() ? "EMPTY" : "FOUND"))
+    println("------> GPG_SIGNING_KEY: " + signingKeyRaw)
+    println("------> GPG_PASSPHRASE: " + signingPassword)
 
     if (!signingKeyRaw.isEmpty()) {
-        def signingKey = signingKeyRaw.contains("-----BEGIN") ?
-                signingKeyRaw :
-                new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
+
+        println("------> GPG_SIGNING_KEY: success" )
+        // Strip any accidental spaces or hidden returns from the secret payload
+        String cleanKeyRaw = signingKeyRaw.replaceAll("\\s", "")
+
+        def signingKey = cleanKeyRaw.contains("-----BEGIN") ?
+                cleanKeyRaw :
+                new String(Base64.getDecoder().decode(cleanKeyRaw))
+        println("------> GPG_SIGNING_KEY: success11" + signingKey)
 
         useInMemoryPgpKeys(signingKey, signingPassword)
+        println("------> GPG_SIGNING_KEY: success222" )
         sign publishing.publications.maven
+        println("------> GPG_SIGNING_KEY: success3333" )
     }
 //    if (signingKeyId && signingPassword) {
 //        // Use in-memory key decoding for GitHub Actions
