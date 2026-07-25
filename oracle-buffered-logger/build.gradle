@@ -131,3 +131,7 @@ jar {
 tasks.withType(AbstractPublishToMaven).configureEach {
     dependsOn tasks.withType(Sign)
 }
+
+tasks.matching { it.name.startsWith("publish") && it.name.contains("PublicationTo") }.configureEach {
+    mustRunAfter tasks.withType(Sign)
+}
