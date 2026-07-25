@@ -7,10 +7,10 @@ plugins {
     id 'io.freefair.lombok' version '8.6'
 }
 
-group = 'com.jiocoders'
-version = '0.0.2'
+group = "${GROUP}"
+version = "${POM_VERSION_NAME}"
 ext {
-    sdkName = 'Oracle Buffered Logger'
+    sdkName = "${APP_NAME}"
 }
 repositories {
     mavenCentral()
@@ -30,9 +30,9 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = "com.jiocoders"
-            artifactId = 'log-utils'
-            version = "0.0.2"
+            groupId = "${GROUP}"
+            artifactId = "${POM_ARTIFACT_ID}"
+            version = "${POM_VERSION_NAME}"
             from components.java
 
             versionMapping {
@@ -51,7 +51,7 @@ publishing {
                 inceptionYear = "2026"
 
                 organization {
-                    name = "Jiocoders"
+                    name = "JioCoders"
                     url = "https://jiocoders.com/"
                 }
                 licenses {
@@ -96,21 +96,10 @@ publishing {
 signing {
     def signingKeyRaw = System.getenv("GPG_SIGNING_KEY") ?: ""
     def signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
-//    try {
-//        java.security.Security.addProvider(
-//                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
-//        )
-//    } catch (Exception e) {}
-    if (signingKeyRaw && signingPassword) {
-        // 2. Safely decode the Base64 key string into raw text layout
-        String signingKey = signingKeyRaw.contains("-----BEGIN") ?
-                signingKeyRaw :
-                new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
-//                new String(Base64.getDecoder().decode(signingKeyRaw.replaceAll("\\s", "")), java.nio.charset.StandardCharsets.UTF_8)
-
+    if (!signingKeyRaw.isEmpty()) {
+        String signingKey = signingKeyRaw.contains("-----BEGIN") ? signingKeyRaw : new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
         // Use in-memory key decoding for GitHub Actions
         useInMemoryPgpKeys(signingKey, signingPassword)
-//        useInMemoryPgpKeys("28B36364", signingKey, signingPassword)
     } else {
         // Fallback to your local Mac setup for manual builds
         useGpgCmd()
@@ -126,16 +115,6 @@ nmcp {
         password = System.getenv("OSSRH_PASSWORD") ?: providers.gradleProperty("ossrhPassword").getOrNull()
     }
 }
-//centralPortal {
-//    // Matches the token credentials specified in your gradle.properties
-//    username = providers.gradleProperty("sonatypeUsername")
-//    password = providers.gradleProperty("sonatypePassword")
-//
-//    // Optional: set to true if you want the bundle to publish automatically
-//    // to Maven Central once all validation checks pass.
-//    // If false, it remains a deployment draft in the portal.
-//    publishingType = 'AUTOMATIC'
-//}
 
 test {
     useJUnitPlatform()
