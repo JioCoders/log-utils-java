@@ -48,6 +48,7 @@ name: Publish to Maven Central
 on:
   release:
     types: [published] # Triggers automatically when you create a GitHub Release
+  workflow_dispatch: # Adds a manual "Run workflow" button in the GitHub UI
 
 jobs:
   publish:
