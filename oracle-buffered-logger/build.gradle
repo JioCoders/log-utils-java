@@ -61,7 +61,6 @@ publishing {
                         distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
                     }
                 }
-                
                 developers {
                     developer {
                         id = 'jiocoders'
@@ -69,7 +68,6 @@ publishing {
                         email = 'jiocoders@gmail.com'
                     }
                 }
-
                 scm {
                     connection = 'scm:git:git://github.com/JioCoders/log-utils-java'
                     developerConnection = 'scm:git:ssh://github.com/JioCoders/log-utils-java'
