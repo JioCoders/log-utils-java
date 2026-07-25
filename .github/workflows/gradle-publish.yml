@@ -71,6 +71,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build and Publish to Central Portal
+        working-directory: oracle-buffered-logger # Tells GitHub to enter your project subfolder first
         env:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
