@@ -103,14 +103,6 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
-    // 1. Dynamic execution hook: Registers the crypto engine safely inside the lifecycle
-    try {
-        java.security.Security.addProvider(
-                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
-        )
-    } catch (Exception e) {
-        // Standard fallback if the class loader handles it internally
-    }
 //    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
 //    def signingPassword = System.getenv("GPG_PASSPHRASE")
 // 1. Read directly from the GitHub environment variables
@@ -123,15 +115,18 @@ signing {
     if (!signingKeyRaw.isEmpty()) {
 
         println("------> GPG_SIGNING_KEY: success" )
-        // Strip any accidental spaces or hidden returns from the secret payload
-        String cleanKeyRaw = signingKeyRaw.replaceAll("\\s", "")
 
-        def signingKey = cleanKeyRaw.contains("-----BEGIN") ?
-                cleanKeyRaw :
-                new String(Base64.getDecoder().decode(cleanKeyRaw))
-        println("------> GPG_SIGNING_KEY: success11" + signingKey)
+        // 2. Register the cryptographic provider dynamically for Ed25519 support
+        try {
+            java.security.Security.addProvider(
+                    Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
+            )
+        } catch (Exception e) {
+            // Fallback for internal class loaders
+        }
+        println("------> GPG_SIGNING_KEY: success11" + signingKeyRaw)
 
-        useInMemoryPgpKeys(signingKey, signingPassword)
+        useInMemoryPgpKeys(signingKeyRaw, signingPassword)
         println("------> GPG_SIGNING_KEY: success222" )
         sign publishing.publications.maven
         println("------> GPG_SIGNING_KEY: success3333" )
