@@ -1,12 +1,2 @@
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.bouncycastle:bcpg-jdk18on:1.78.1'
-    }
-}
 rootProject.name = 'oracle-buffered-logger-app'
-
 include 'oracle-buffered-logger'

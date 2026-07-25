@@ -8,6 +8,8 @@ A brief, one-sentence description of what this Java Spring Boot application does
 * **Feature 2**: Brief description of another capability.
 * **REST API**: Clean, documented endpoints for system interaction.
 
+[![Publish to Maven Central](https://github.com/JioCoders/log-utils-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/JioCoders/log-utils-java/actions/workflows/gradle-publish.yml)
+
 ## 🛠️ Prerequisites
 
 Before running this project, ensure you have the following installed:

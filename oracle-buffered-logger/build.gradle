@@ -1,12 +1,3 @@
-//import org.bouncycastle.jce.provider.BouncyCastleProvider
-//import java.security.Security
-//
-//// CRITICAL: Initialize the advanced BouncyCastle provider right as the script parses.
-//// This is mandatory for Gradle to understand modern Ed25519 / Elliptic Curve GPG keys.
-//if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
-//    Security.addProvider(new BouncyCastleProvider())
-//}
-
 plugins {
     id 'java-library'
     id 'maven-publish'
@@ -103,42 +94,28 @@ publishing {
 // 1. Ensure signing is explicitly linked to your publication
 // Enable signing for the mavenJava publication
 signing {
-// 1. Read directly from the GitHub environment variables
     def signingKeyRaw = System.getenv("GPG_SIGNING_KEY") ?: ""
     def signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
-
-    println("------> GPG_SIGNING_KEY: " + signingKeyRaw)
-    println("------> GPG_PASSPHRASE: " + signingPassword)
-    try {
-        java.security.Security.addProvider(
-                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
-        )
-    } catch (Exception e) {
-        // Fallback for custom class loaders
-    }
-    if (!signingKeyRaw.isEmpty()) {
-        println("------> GPG_SIGNING_KEY: success" )
+//    try {
+//        java.security.Security.addProvider(
+//                Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider").getDeclaredConstructor().newInstance()
+//        )
+//    } catch (Exception e) {}
+    if (signingKeyRaw && signingPassword) {
         // 2. Safely decode the Base64 key string into raw text layout
         String signingKey = signingKeyRaw.contains("-----BEGIN") ?
                 signingKeyRaw :
-                new String(Base64.getDecoder().decode(signingKeyRaw.replaceAll("\\s", "")), java.nio.charset.StandardCharsets.UTF_8)
-        println("------> GPG_SIGNING_KEY: success11" + signingKey)
+                new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
+//                new String(Base64.getDecoder().decode(signingKeyRaw.replaceAll("\\s", "")), java.nio.charset.StandardCharsets.UTF_8)
 
-        useInMemoryPgpKeys("28B36364", signingKey, signingPassword)
-        println("------> GPG_SIGNING_KEY: success222" )
-        sign publishing.publications.maven
-        println("------> GPG_SIGNING_KEY: success3333" )
+        // Use in-memory key decoding for GitHub Actions
+        useInMemoryPgpKeys(signingKey, signingPassword)
+//        useInMemoryPgpKeys("28B36364", signingKey, signingPassword)
+    } else {
+        // Fallback to your local Mac setup for manual builds
+        useGpgCmd()
     }
-//    if (signingKeyId && signingPassword) {
-//        // Use in-memory key decoding for GitHub Actions
-//        def decodedKey = new String(Base64.getDecoder().decode(signingKeyId.trim()))
-//        useInMemoryPgpKeys(decodedKey, signingPassword)
-//        println("------> GPG_SIGNING_KEY: success" )
-//    } else {
-//        // Fallback to your local Mac setup for manual builds
-//        useGpgCmd()
-//    }
-//    sign publishing.publications.maven
+    sign publishing.publications.maven
 }
 // 2. Configure NMCP to fetch the signed artifacts
 // Configure the Sonatype Central modern publishing block
