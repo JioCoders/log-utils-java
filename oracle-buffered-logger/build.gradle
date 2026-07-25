@@ -97,8 +97,8 @@ signing {
 //    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
 //    def signingPassword = System.getenv("GPG_PASSPHRASE")
 
-    def signingKeyRaw = providers.gradleProperty("signingKey").getOrElse("")
-    def signingPassword = providers.gradleProperty("signingPassword").getOrElse("")
+    def signingKeyRaw = providers.gradleProperty("GPG_SIGNING_KEY").getOrElse("")
+    def signingPassword = providers.gradleProperty("GPG_PASSPHRASE").getOrElse("")
 
     if (!signingKeyRaw.isEmpty()) {
         def signingKey = signingKeyRaw.contains("-----BEGIN") ?
