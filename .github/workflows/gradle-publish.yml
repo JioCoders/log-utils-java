@@ -76,10 +76,11 @@ jobs:
           ls -R
 
       - name: Build and Publish to Central Portal
-        working-directory: oracle-buffered-logger # Tells GitHub to enter your project subfolder first
         env:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew clean publishMavenPublicationToCentralPortal --no-daemon
+        run: |
+          cd oracle-buffered-logger
+          ./gradlew clean publishMavenPublicationToCentralPortal --no-daemon
