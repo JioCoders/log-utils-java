@@ -96,24 +96,20 @@ publishing {
 signing {
 //    def signingKeyId = System.getenv("GPG_SIGNING_KEY")
 //    def signingPassword = System.getenv("GPG_PASSPHRASE")
+// 1. Read directly from the GitHub environment variables
+    def signingKeyRaw = System.getenv("GPG_SIGNING_KEY") ?: ""
+    def signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
 
-    def signingKeyRaw = providers.gradleProperty("signingKey").getOrElse("")
-    def signingPassword = providers.gradleProperty("signingPassword").getOrElse("")
-
-    println("------> GPG_SIGNING_KEY: " + signingKeyRaw)
-    println("------> GPG_PASSPHRASE: " + signingPassword)
+    println("------> GPG_SIGNING_KEY: " + (signingKeyRaw.isEmpty() ? "EMPTY" : "FOUND"))
+    println("------> GPG_PASSPHRASE: " + (signingPassword.isEmpty() ? "EMPTY" : "FOUND"))
 
     if (!signingKeyRaw.isEmpty()) {
         def signingKey = signingKeyRaw.contains("-----BEGIN") ?
                 signingKeyRaw :
                 new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
 
-        println("------> GPG_SIGNING_KEY: success1" +signingKey)
-        // Ensure NO 'useGpgCmd()' or tool paths are written here
         useInMemoryPgpKeys(signingKey, signingPassword)
-        println("------> GPG_SIGNING_KEY: success11" )
         sign publishing.publications.maven
-        println("------> GPG_SIGNING_KEY: success22" )
     }
 //    if (signingKeyId && signingPassword) {
 //        // Use in-memory key decoding for GitHub Actions
