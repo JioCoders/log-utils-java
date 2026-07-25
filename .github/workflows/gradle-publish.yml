@@ -70,8 +70,13 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x gradlew
 
+      - name: Debug Project Structure
+        run: |
+          echo "=== Root Directory Content ==="
+          ls -R
+
       - name: Build and Publish to Central Portal
-        working-directory: oracle-buffered-logger # Tells GitHub to enter your project subfolder first
+        working-directory: oracle-buffered-logger/oracle-buffered-logger # Tells GitHub to enter your project subfolder first
         env:
           GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
