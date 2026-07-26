@@ -1,14 +1,17 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version "${spring_boot}"
+    id 'org.springframework.boot' version "${spring_version}"
     id 'io.spring.dependency-management' version "${dependency_plugin}"
 }
 
 group = "${group_name}"
-version = "${app_version}"
+version = "${version_name}"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+//    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -19,13 +22,13 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:${spring_boot}"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${spring_version}"
         }
     }
 }
 
 dependencies {
-    implementation platform("org.springframework.boot:spring-boot-dependencies:${spring_boot}")
+    implementation platform("org.springframework.boot:spring-boot-dependencies:${spring_version}")
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
