@@ -25,24 +25,18 @@ public class AuditApiLogEntity extends AuditDateEntity {
     @Column(name = "METHOD", length = 10)
     private String method;
 
-    @Column(name = "ENDPOINT")
     private String endpoint;
-
-    @Column(name = "HEADERS")
     private String headers;
-
-    @Column(name = "STATUS_CODE")
     private Integer statusCode;
+    private String message;
+    private String remark;
 
     @Column(name = "REQUEST_TIME_MS")
     private Long requestTimeMs;
-
     @Column(name = "RESPONSE_TIME_MS")
     private Long responseTimeMs;
-
     @Column(name = "REQUEST_BODY", length = 2000)
     private String requestBody;
-
     @Column(name = "RESPONSE_BODY", length = 2000)
     private String responseBody;
 

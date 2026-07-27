@@ -17,4 +17,13 @@ spring:
         jdbc:
           batch_size: 50
         order_inserts: true
-batch-size: 50
+
+# Thread Pool Configuration
+event:
+  threadPool:
+    size:
+      core: 5
+      max: 10
+      batch: 800
+  flush:
+    interval-ms: 500000

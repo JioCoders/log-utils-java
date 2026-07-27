@@ -1,43 +1,31 @@
 package com.jiocoders.listener;
 
-import com.jiocoders.entity.AuditApiLogEntity;
-import com.jiocoders.entity.AuditErrLogEntity;
-import com.jiocoders.entity.AuditMsgLogEntity;
 import com.jiocoders.repository.BufferedRepository;
+import com.jiocoders.utils.PersistentEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author - Jiocoders
+ * @project - oracle-buffered-logger-app
+ * @class - LogEventListener
+ * @dateTime - 26-Jul-2026 17:04
+ * <p>
+ * Copyright (c) 2026. All rights reserved.
+ */
 @Component
 @RequiredArgsConstructor
 public class LogEventListener {
 
-    private final BufferedRepository<AuditApiLogEntity> apiBf;
-    private final BufferedRepository<AuditMsgLogEntity> msgBf;
-    private final BufferedRepository<AuditErrLogEntity> errBf;
+    private final BufferedRepository bufferedRepository;
 
     /**
-     * Listens to API LogEvents published anywhere in the application.
+     * Listens to Log Events published anywhere in the application.
      */
     @EventListener
-    public void onEvent(AuditApiLogEntity event) {
-        apiBf.save(event);
-    }
-
-    /**
-     * Listens to Message Events.
-     */
-    @EventListener
-    public void onEvent(AuditMsgLogEntity event) {
-        msgBf.save(event);
-    }
-
-    /**
-     * Listens to Error Events.
-     */
-    @EventListener
-    public void onEvent(AuditErrLogEntity event) {
-        errBf.save(event);
+    public void onEventLog(PersistentEvent<?> event) {
+        bufferedRepository.buffer(event);
     }
 
 }
