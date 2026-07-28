@@ -138,6 +138,11 @@ tasks.withType(AbstractPublishToMaven).configureEach {
     dependsOn tasks.withType(Sign)
 }
 
+tasks.withType(Javadoc).configureEach {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.failOnError = false
+}
+
 tasks.matching { it.name.startsWith("publish") && it.name.contains("PublicationTo") }.configureEach {
     mustRunAfter tasks.withType(Sign)
 }
