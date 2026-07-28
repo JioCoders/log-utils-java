@@ -139,8 +139,10 @@ tasks.withType(AbstractPublishToMaven).configureEach {
 }
 
 tasks.withType(Javadoc).configureEach {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.failOnError = false
+    failOnError = false
+    options {
+        addStringOption('Xdoclint:none', '-quiet')
+    }
 }
 
 tasks.matching { it.name.startsWith("publish") && it.name.contains("PublicationTo") }.configureEach {
