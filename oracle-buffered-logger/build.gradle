@@ -93,11 +93,19 @@ signing {
     def signingKeyRaw = System.getenv("GPG_SIGNING_KEY") ?: ""
     def signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
     boolean isJitPack = System.getenv("JITPACK") == "true"
+    boolean isCI = System.getenv("GITHUB_ACTIONS") == "true" // Detects GitHub runner
     if (!isJitPack && !signingKeyRaw.isEmpty()) {
         String signingKey = signingKeyRaw.contains("-----BEGIN") ? signingKeyRaw : new String(Base64.getDecoder().decode(signingKeyRaw.trim()))
         // Use in-memory key decoding for GitHub Actions
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign publishing.publications.maven
+    } else if (!isJitPack && !isCI) {
+        // Fallback to your local Mac setup for manual builds
+        // Only run this locally on your Mac, never on the GitHub Actions Linux runner
+        useGpgCmd()
+        sign publishing.publications.maven
+    } else if (isCI) {
+        project.logger.lifecycle("CI environment detected but GPG keys are missing! Skipping signing to prevent crash.")
     } else if (!isJitPack) {
         // Fallback to your local Mac setup for manual builds
         useGpgCmd()
