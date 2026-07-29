@@ -9,9 +9,9 @@ name: CI/CD - Build, Package and Publish Java Library
 
 on:
   push:
-    branches: [ main, eature/OBL-1_generic_buffer_repo ]
+    branches: [ feature/OBL-1_generic_buffer_repo ]
   pull_request:
-    branches: [ main ]
+    branches: [ feature/OBL-1_generic_buffer_repo ]
   release:
     types: [published] # Triggers publishing instantly when a GitHub Release is created
   workflow_dispatch: # Adds a manual "Run workflow" button in the GitHub UI
@@ -107,7 +107,7 @@ jobs:
   # ==========================================
   publish-to-maven-central:
     name: Publish to Maven Central
-    needs: verify
+    needs: publish-github-packages
     # 👇 Updated: Runs if it's a real release OR if you trigger it manually
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
