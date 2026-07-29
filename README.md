@@ -10,6 +10,8 @@ A brief, one-sentence description of what this Java Spring Boot application does
 
 [![Publish to Maven Central](https://github.com/JioCoders/log-utils-java/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/JioCoders/log-utils-java/actions/workflows/gradle-publish.yml)
 
+[![](https://jitpack.io/v/JioCoders/log-utils-java.svg)](https://jitpack.io/#JioCoders/log-utils-java)
+
 ## 🛠️ Prerequisites
 
 Before running this project, ensure you have the following installed:
