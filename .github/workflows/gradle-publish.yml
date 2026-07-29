@@ -170,4 +170,4 @@ jobs:
         run: |
           cd oracle-buffered-logger
           # Explicitly targets the NMCP task block to zip and upload straight to Sonatype Portal
-          ./gradlew clean
+          ../gradlew clean
