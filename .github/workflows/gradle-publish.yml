@@ -9,7 +9,7 @@ name: CI/CD - Build, Package and Publish Java Library
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, eature/OBL-1_generic_buffer_repo ]
   pull_request:
     branches: [ main ]
   release:
@@ -46,7 +46,7 @@ jobs:
   # JOB 2: GITHUB PACKAGES PUBLISHING
   # Publishing (Runs ONLY when you explicitly publish a GitHub Release)
   # ==========================================
-  publish-and-release:
+  publish-github-packages:
     name: Publish to GitHub Packages
     needs: verify
     # 👇 Updated: Runs if it's a real release OR if you trigger it manually
