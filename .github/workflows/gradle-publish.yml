@@ -47,7 +47,7 @@ jobs:
   # Publishing (Runs ONLY when you explicitly publish a GitHub Release)
   # ==========================================
   publish-and-release:
-    name: Package, Sign and Publish to Registries
+    name: Publish to GitHub Packages
     needs: verify
     # 👇 Updated: Runs if it's a real release OR if you trigger it manually
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
@@ -106,7 +106,7 @@ jobs:
   # Deploys your module securely to Maven Central using your Ed25519 GPG configuration
   # ==========================================
   publish-to-maven-central:
-    name: Package, Sign and Publish to Registries
+    name: Publish to Maven Central
     needs: verify
     # 👇 Updated: Runs if it's a real release OR if you trigger it manually
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
