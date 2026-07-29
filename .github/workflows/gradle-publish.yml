@@ -9,7 +9,7 @@ name: CI/CD - Build, Package and Publish Java Library
 
 on:
   push:
-    branches: [ main, eature/OBL-1_generic_buffer_repo ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   release:
@@ -170,4 +170,6 @@ jobs:
         run: |
           cd oracle-buffered-logger
           # Explicitly targets the NMCP task block to zip and upload straight to Sonatype Portal
-          ../gradlew clean
+          ../gradlew clean |
+          ../gradlew build |
+          ../gradlew test
